@@ -1,0 +1,87 @@
+Ts = 5e-7;
+
+fgrid=50;
+
+Initial_Cap_V=100;
+
+Rdson=1e-3;
+Rsnubber=1e5;
+Csnubber=1e5;
+
+Cout=21e-3;
+RLoad=10;
+
+R_ac=10e4;
+
+VAC_pk=500;
+DCV=VAC_pk/5;
+
+nbridges=5;
+
+nlevels=2*nbridges+1;
+
+fsw=50e3;
+Tsw=1/fsw;
+TswS=40e-3;
+
+%% Carriers
+
+Tcarriers=[0 Tsw/2 Tsw];
+Tshift=[0 Tsw 2*Tsw 3*Tsw 4*Tsw 5*Tsw];
+Acarriers=2/(nlevels-1);
+
+Sc11=[Acarriers 2*Acarriers 3*Acarriers 4*Acarriers];
+Ac11=[0 Acarriers 0];
+Sc12=[-Acarriers -2*Acarriers -3*Acarriers -4*Acarriers];
+AC12=[0 Acarriers 0]-Acarriers;
+
+
+Sc21=[Acarriers 2*Acarriers 3*Acarriers -Acarriers];
+Ac21=[0 Acarriers 0]+Acarriers;
+Sc22=[-Acarriers -2*Acarriers -3*Acarriers Acarriers];
+Ac22=[0 Acarriers 0]-2*Acarriers;
+
+Sc31=[Acarriers 2*Acarriers -2*Acarriers -Acarriers];
+Ac31=[0 Acarriers 0]+2*Acarriers;
+Sc32=[-Acarriers -2*Acarriers 2*Acarriers Acarriers];
+AC32=[0 Acarriers 0]-3*Acarriers;
+
+Sc41=[Acarriers -3*Acarriers -2*Acarriers -Acarriers];
+Ac41=[0 Acarriers 0]+3*Acarriers;
+Sc42=[-Acarriers 3*Acarriers 2*Acarriers Acarriers];
+Ac42=[0 Acarriers 0]-4*Acarriers;
+
+Sc51=[-4*Acarriers -3*Acarriers -2*Acarriers -Acarriers];
+Ac51=[0 Acarriers 0]+4*Acarriers;
+Sc52=[4*Acarriers 3*Acarriers 2*Acarriers Acarriers];
+Ac52=[0 Acarriers 0]-5*Acarriers;
+
+
+%% AC Filter
+
+Rgrid=0.8929;
+Lgrid=16.58e-3;
+
+Rfilter=1.33e-2;
+Lfilter=1.33e-4;
+
+%% Controller specs
+
+Tz=Lgrid/(Rfilter);
+
+alfa_i=1;
+
+Td=1/(2*5*fsw);
+Tp=2*alfa_i*Td/(Rfilter);
+Kii=1/Tp;
+Kpi=Tz/Tp;
+
+
+Tdv=1/fgrid;
+
+alfa_v=1;
+
+Gi=(sqrt(3/2)*500)  /500;
+
+Kpv=-(2.15*Cout*alfa_i)/(1.75^2*alfa_v*Gi*Tdv);
+Kiv=-(Cout*alfa_i)/(1.75^3*alfa_v*Gi*Tdv^2);
